@@ -58,7 +58,7 @@
     
     [settings setSharedCredentials:[SPUnitTestCredentials testCredentials]];
     
-    [settings setSharedRootUrl:@"https://my.i3solutions.com/clients/Xobni"];
+    [settings setSharedRootUrl:[SPUnitTestCredentials testUrl]];
     
     [settings setSynchronousNetworkMode:YES];
     [settings setDebugMode:YES];
