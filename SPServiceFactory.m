@@ -44,4 +44,9 @@ static SPServiceSettings* _serviceSettings;
     return [SPServiceFactory makeService:@"/_vti_bin/Lists.asmx"];
 }
 
++ (SPSoapService*) siteDataService
+{
+    return [SPServiceFactory makeService:@"/_vti_bin/SiteData.asmx"];
+}
+
 @end

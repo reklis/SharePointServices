@@ -50,7 +50,6 @@
     [req appendPostData:[SPSoapService makeSoapEnvelope:body]];
     
     [req setCompletionBlock:^{
-        NSLog(@"%@", @"completion block firing");
         handler(req);
     }];
     
@@ -65,6 +64,21 @@
     } else {
         [req startAsynchronous];
     }
+}
+
+@end
+
+@implementation SPSoapServiceEntity
+
+@synthesize service;
+
+- (id) initWithService:(SPSoapService*)svc
+{
+    self = [super init];
+    if (self != nil) {
+        self.service = svc;
+    }
+    return self;
 }
 
 @end

@@ -12,35 +12,38 @@
 
 @implementation SPList
 
-@synthesize listSvc;
-
 + (SPList*) list
 {
     return [[[SPList alloc] initWithService:[SPServiceFactory listService]] autorelease];
 }
 
-- (id) initWithService:(SPSoapService*)listService
-{
-    self = [super init];
-    if (self != nil) {
-        self.listSvc = listService;
-    }
-    return self;
-}
-
 - (void) getListCollection:(SPSoapRequestCompletedBlock)handler
 {
-    [listSvc execute:@"http://schemas.microsoft.com/sharepoint/soap/GetListCollection"
-         requestBody:@"<GetListCollection xmlns=\"http://schemas.microsoft.com/sharepoint/soap/\" />"
-         withHandler:handler
-     ];
+    [self.service execute:@"http://schemas.microsoft.com/sharepoint/soap/GetListCollection"
+              requestBody:@"<GetListCollection xmlns=\"http://schemas.microsoft.com/sharepoint/soap/\" />"
+              withHandler:handler];
 }
 
 - (void) getList:(NSString*)listName handler:(SPSoapRequestCompletedBlock)handler
 {
-    [listSvc execute:@"http://schemas.microsoft.com/sharepoint/soap/GetList"
-         requestBody:[NSString stringWithFormat:@"<GetList xmlns=\"http://schemas.microsoft.com/sharepoint/soap/\"><listName>%@</listName></GetList>", listName]
-         withHandler:handler];
+    [self.service execute:@"http://schemas.microsoft.com/sharepoint/soap/GetList"
+              requestBody:[NSString stringWithFormat:@"<GetList xmlns=\"http://schemas.microsoft.com/sharepoint/soap/\"><listName>%@</listName></GetList>", listName]
+              withHandler:handler];
+}
+
+- (void) getListItems:(NSString*)listName
+             viewName:(NSString*)viewName 
+                query:(NSString*)query 
+           viewFields:(NSString*)viewFields 
+             rowLimit:(NSString*)rowLimit 
+         queryOptions:(NSString*)queryOptions 
+                webID:(NSString*)webID
+              handler:(SPSoapRequestCompletedBlock)handler
+{
+    [self.service execute:@"http://schemas.microsoft.com/sharepoint/soap/GetListItems"
+              requestBody:[NSString stringWithFormat:@"<GetListItems xmlns=\"http://schemas.microsoft.com/sharepoint/soap/\"><listName>%@</listName><viewName>%@</viewName><query>%@</query><viewFields>%@</viewFields><rowLimit>%@</rowLimit><queryOptions>%@</queryOptions><webID>%@</webID></GetListItems>",
+                      listName, viewName, query, viewFields, rowLimit, queryOptions, webID]
+              withHandler:handler];
 }
 
 @end

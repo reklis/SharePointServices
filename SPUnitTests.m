@@ -36,6 +36,7 @@
 
 @end
 
+#define STAssertHTTPOK(_REQ_) STAssertEquals([_REQ_ responseStatusCode], HTTPStatusOK, [_REQ_ responseString])
 
 @implementation SPUnitTests
 
@@ -68,54 +69,144 @@
     log = [[[SPDebugLogger alloc] init] autorelease];
 }
 
-- (void) testListServiceGetListCollection
+- (void) testList_GetListCollection
 {
     SPList* list = [SPList list];
     
     [list getListCollection:^(SPSoapRequest* req){
         STAssertNotNil(req, @"Request nil");
         STAssertNotNil([req responseString], @"response string nil");
-        [log write:[req responseString]];
+        //[log write:[req responseString]];
         STAssertEquals([req responseStatusCode], HTTPStatusOK, [req responseStatusMessage]);
         
         __block int blockExecCount = 0;
         [req responseNodesForXPath:@"//sp:List" usingBlock:^(XPathResult* r) {
             STAssertNotNil(r, @"result should not be nil");
-            [log write:[NSString stringWithFormat:@"%@", r]];
+            //[log write:[NSString stringWithFormat:@"%@", r]];
             STAssertEqualObjects(r.name, @"List", @"name of element matched not list");
             STAssertEqualObjects(r.content, @"", @"content of list should be empty");
+            
+            STAssertNotNil(r.attributes, @"attribute dictionary should not be nil");
+            //[log write:[NSString stringWithFormat:@"%@", r.attributes]];
+            STAssertTrue((r.attributes.count != 0), @"attribute count should not be zero");
             
             ++blockExecCount;
         }];
         
-        STAssertTrue(blockExecCount == 26, [NSString stringWithFormat:@"%d blocks executed", blockExecCount]);
+        STAssertTrue(blockExecCount != 0, [NSString stringWithFormat:@"%d blocks executed", blockExecCount]);
     }];
 }
 
-- (void) testListServiceGetListByName
+- (void) testList_GetListByName
 {
     SPList* list = [SPList list];
     
-    [list getList:@"Calendar" handler:^(SPSoapRequest* req){
-        STAssertNotNil(req, @"Request nil");
-        STAssertNotNil([req responseString], @"response string nil");
-        [log write:[req responseString]];
-        STAssertEquals([req responseStatusCode], HTTPStatusOK, [req responseStatusMessage]);
+    [list getList:@"Shared Documents" handler:^(SPSoapRequest* req){
+        STAssertHTTPOK(req);
         
         NSArray* results = [req responseNodesForXPath:@"//sp:List/@Title"];
         STAssertNotNil(results, @"results should not be nil");
         
-        [log write:[NSString stringWithFormat:@"%@", results]];
+        //[log write:[NSString stringWithFormat:@"%@", results]];
         
         STAssertEquals((int)results.count, (int)1, [NSString stringWithFormat:@"found %d", [results count]]);
         
-        XPathResult* r = [results objectAtIndex:0];
-        STAssertNotNil(r, @"first object in array should not be nil");
-        STAssertEqualObjects(r.content, @"Calendar", @"result title not equal to list name searched");
+        if (results.count > 0) {
+            XPathResult* r = [results objectAtIndex:0];
+            STAssertNotNil(r, @"first object in array should not be nil");
+            STAssertEqualObjects(r.content, @"Shared Documents", @"result title not equal to list name searched");
+            
+            NSArray* fields = [req responseNodesForXPath:@"//sp:Field"];
+            STAssertNotNil(fields, @"fields results should not be nil");
+            STAssertEquals((int)fields.count, (int)114, [NSString stringWithFormat:@"found %d", [fields count]]);
+            
+            STAssertNil(r.attributes, @"should not be any attributes on matched attribute");
+            
+            NSString* listId = [r.attributes objectForKey:@"Name"];
+            [list getListItems:listId
+                      viewName:@"" query:@"" viewFields:@""
+                      rowLimit:@"0"
+                  queryOptions:@""
+                         webID:@""
+                       handler:^(SPSoapRequest* getListItemReq) {
+                
+            }];
+        }
+    }];
+}
+
+- (void) testSiteData_EnumerateFolder
+{
+    SPSiteData* siteData = [SPSiteData siteData];
+    
+    [siteData enumerateFolder:[[SPUnitTestCredentials testUrl] stringByAppendingString:@"/Shared%20Documents"]
+                  withHandler:^(SPSoapRequest* enumFolderReq)
+    {
+        STAssertHTTPOK(enumFolderReq);
+                
+        //[log write:enumFolderReq.responseString];
+    }];
+}
+
+- (void) testSiteData_GetSiteAndWeb
+{
+    SPSiteData* siteData = [SPSiteData siteData];
+    
+    [siteData getSiteAndWeb:[SPUnitTestCredentials testUrl]
+                withHandler:^(SPSoapRequest* getSiteAndWebReq)
+    {
+        STAssertHTTPOK(getSiteAndWebReq);
+    }];
+}
+
+- (void) testSiteData_GetSite
+{
+    SPSiteData* siteData = [SPSiteData siteData];
+    
+    [siteData getSite:^(SPSoapRequest* getSiteReq)
+    {
+        STAssertHTTPOK(getSiteReq);
+    }];
+}
+
+- (void) testSiteData_GetWeb
+{
+    SPSiteData* siteData = [SPSiteData siteData];
+    
+    [siteData getWeb:^(SPSoapRequest *getWebReq)
+    {
+        STAssertHTTPOK(getWebReq);
+    }];
+}
+
+- (void) testSiteData_GetListItems
+{
+    SPSiteData* siteData = [SPSiteData siteData];
+    
+    [siteData getWeb:^(SPSoapRequest *getWebReq)
+    {
+        STAssertHTTPOK(getWebReq);
+
+        [getWebReq responseNodesForXPath:@"//sp:InternalName" usingBlock:^(XPathResult *r) {
+            NSString* listId = r.content;
+            
+            STAssertNotNil(listId, @"list id should not be nil");
+            
+            //[log write:listId];
+            
+            [siteData getListItems:listId
+                             query:@""
+                        viewFields:@""
+                          rowLimit:@"0"
+                           handler:^(SPSoapRequest* listItemReq)
+            {
+                STAssertHTTPOK(listItemReq);
+                               
+                //[log write:listItemReq.responseString];
+            }];
         
-        NSArray* fields = [req responseNodesForXPath:@"//sp:Field"];
-        STAssertNotNil(fields, @"fields results should not be nil");
-        STAssertEquals((int)fields.count, (int)103, [NSString stringWithFormat:@"found %d", [fields count]]);
+        }];
+        
     }];
 }
 

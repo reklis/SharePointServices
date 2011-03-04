@@ -28,3 +28,13 @@ typedef void (^SPSoapRequestCompletedBlock)(SPSoapRequest* request);
      withHandler:(SPSoapRequestCompletedBlock)handler;
 
 @end
+
+@interface SPSoapServiceEntity : NSObject {
+    
+}
+
+@property (readwrite,nonatomic,retain) SPSoapService* service;
+
+- (id) initWithService:(SPSoapService*)svc;
+
+@end

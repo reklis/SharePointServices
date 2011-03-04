@@ -10,8 +10,8 @@
 
 #import "SPCredentials.h"
 
-@interface SPServiceSettings : NSObject {
-
+@interface SPServiceSettings : NSObject
+{
 }
 
 @property (readwrite,nonatomic,retain) NSString* sharedRootUrl;

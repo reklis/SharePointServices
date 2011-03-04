@@ -22,5 +22,6 @@
 + (SPSoapService*) makeService:(NSString*)resourcePath;
 
 + (SPSoapService*) listService;
++ (SPSoapService*) siteDataService;
 
 @end

@@ -35,8 +35,14 @@
 - (void) testAppDelegate;       // simple test on application
 #else
 
-- (void) testListServiceGetListCollection;
-- (void) testListServiceGetListByName;
+- (void) testList_GetListCollection;
+- (void) testList_GetListByName;
+
+- (void) testSiteData_EnumerateFolder;
+- (void) testSiteData_GetSiteAndWeb;
+- (void) testSiteData_GetSite;
+- (void) testSiteData_GetWeb;
+- (void) testSiteData_GetListItems;
 
 #endif
 

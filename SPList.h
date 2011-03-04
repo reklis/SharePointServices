@@ -10,16 +10,20 @@
 
 #import "SPSoapService.h"
 
-@interface SPList : NSObject {
+@interface SPList : SPSoapServiceEntity {
 }
-
-@property (readwrite,nonatomic,retain) SPSoapService* listSvc;
 
 + (SPList*) list;
 
-- (id) initWithService:(SPSoapService*)listService;
-
 - (void) getListCollection:(SPSoapRequestCompletedBlock)handler;
 - (void) getList:(NSString*)listName handler:(SPSoapRequestCompletedBlock)handler;
+- (void) getListItems:(NSString*)listName
+             viewName:(NSString*)viewName 
+                query:(NSString*)query 
+           viewFields:(NSString*)viewFields 
+             rowLimit:(NSString*)rowLimit 
+         queryOptions:(NSString*)queryOptions 
+                webID:(NSString*)webID
+              handler:(SPSoapRequestCompletedBlock)handler;
 
 @end
