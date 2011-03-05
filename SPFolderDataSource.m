@@ -80,7 +80,7 @@
         
         case SPFolderDataSourceStateSucceeded:
         {
-            SPFolderItem* item = [self.directoryContents objectAtIndex:indexPath.row];
+            SPFolderItem* item = [self itemAtPath:indexPath];
             
             cell.accessoryType = (item.isFolder) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
             cell.textLabel.text = item.name;
@@ -134,10 +134,10 @@
     }];
 }
 
-- (NSString*) urlForItemAtPath:(NSIndexPath*)indexPath
+- (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath
 {
     SPFolderItem* item = [self.directoryContents objectAtIndex:indexPath.row];
-    return item.url;
+    return item;
 }
 
 @end

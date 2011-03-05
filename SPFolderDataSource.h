@@ -44,6 +44,6 @@ typedef enum SPFolderDataSourceStateEnum
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void) loadFolderAtUrl:(NSString*)url;
-- (NSString*) urlForItemAtPath:(NSIndexPath*)indexPath;
+- (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath;
 
 @end
