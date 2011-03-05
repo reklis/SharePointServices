@@ -81,4 +81,10 @@
     return self;
 }
 
+- (NSString*) contextUrl
+{
+    NSURL* u = [NSURL URLWithString:self.service.resourceUrl];
+    return [[[u URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] absoluteString];
+}
+
 @end

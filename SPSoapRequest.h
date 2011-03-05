@@ -27,5 +27,6 @@ typedef enum HTTPStatusEnum {
 
 - (NSArray*) responseNodesForXPath:(NSString*)query;
 - (void) responseNodesForXPath:(NSString *)query usingBlock:(XPathResultBlock)handler;
+- (NSString*) responseNodeContentForXPath:(NSString*)query;
 
 @end

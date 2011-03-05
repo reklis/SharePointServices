@@ -36,5 +36,6 @@ typedef void (^SPSoapRequestCompletedBlock)(SPSoapRequest* request);
 @property (readwrite,nonatomic,retain) SPSoapService* service;
 
 - (id) initWithService:(SPSoapService*)svc;
+- (NSString*) contextUrl;
 
 @end

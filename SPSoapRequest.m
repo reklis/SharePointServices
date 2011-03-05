@@ -26,6 +26,12 @@
                           usingNamespaces:[SPSoapRequest sharepointNamespaces]];
 }
 
+- (NSString*) responseNodeContentForXPath:(NSString*)query
+{
+    return [[self responseData] contentAtXPath:query
+                               usingNamespaces:[SPSoapRequest sharepointNamespaces]];
+}
+
 - (void) responseNodesForXPath:(NSString *)query usingBlock:(XPathResultBlock)handler
 {
     [[self responseData] findXPath:query
