@@ -36,7 +36,9 @@ typedef enum SPFolderDataSourceStateEnum
 }
 
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl;
++ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex;
 
+@property (readwrite,nonatomic,retain) NSString* filter;
 @property (readwrite,nonatomic,retain) NSArray* directoryContents;
 @property (readwrite,nonatomic,assign) SPFolderDataSourceState dataSourceState;
 

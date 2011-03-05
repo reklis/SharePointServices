@@ -32,11 +32,22 @@
 
 @synthesize directoryContents;
 @synthesize dataSourceState;
+@synthesize filter;
+
++ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex
+{
+    SPFolderDataSource* ds = [[[SPFolderDataSource alloc] init] autorelease];
+    ds.filter = regex;
+    
+    [ds loadFolderAtUrl:folderUrl];
+
+    return ds;
+}
 
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl
 {
-    SPFolderDataSource* ds = [[[SPFolderDataSource alloc] init] autorelease];
-    [ds loadFolderAtUrl:folderUrl];
+    SPFolderDataSource* ds = [SPFolderDataSource folderDataSourceForUrl:folderUrl
+                                                                 filter:nil];
     return ds;
 }
 
@@ -121,10 +132,30 @@
                 NSString* isFolder = [folderReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/*[3]"]];
                 NSString* name = [[NSURL URLWithString:[itemUrl stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]] lastPathComponent];
                 
-                SPFolderItem* item = [SPFolderItem itemWithName:name
-                                                            url:itemUrl
-                                                       isFolder:([isFolder isEqualToString:@"true"])];
-                [dir addObject:item];
+                BOOL addObject = YES;
+                
+                if (self.filter) {
+                    NSError* error = nil;
+                    NSRegularExpression* re = [NSRegularExpression regularExpressionWithPattern:self.filter
+                                                                                        options:0
+                                                                                          error:&error];
+                    if (error) {
+                        NSLog(@"Error in RegEx: %@", error);
+                    } else {
+                        if (0 != [re numberOfMatchesInString:name
+                                                     options:0
+                                                       range:NSMakeRange(0, name.length)]) {
+                            addObject = NO;
+                        }
+                    }
+                }
+                
+                if (addObject) {
+                    SPFolderItem* item = [SPFolderItem itemWithName:name
+                                                                url:itemUrl
+                                                           isFolder:([isFolder isEqualToString:@"true"])];
+                    [dir addObject:item];
+                }
             }];
             
             self.directoryContents = dir;
