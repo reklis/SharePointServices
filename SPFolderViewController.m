@@ -28,13 +28,13 @@
 }
 
 
-#pragma mark UIViewController
+#pragma mark UITableViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.clearsSelectionOnViewWillAppear = NO;
-    self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
+    
+    self.clearsSelectionOnViewWillAppear = YES;
     
     self.folderDataSource = [SPFolderDataSource folderDataSourceForUrl:self.directoryUrl];
 
@@ -55,12 +55,6 @@
     if ([keyPath isEqualToString:@"dataSourceState"]) {
         [self.tableView reloadData];
     }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -115,6 +109,8 @@
         SPFolderViewController* nestedController = [[[SPFolderViewController alloc] init] autorelease];
         nestedController.directoryUrl = item.url;
         nestedController.delegate = self.delegate;
+        nestedController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+        nestedController.title = [[NSURL URLWithString:[item.url stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]] lastPathComponent];
         
         [self.navigationController pushViewController:nestedController animated:YES];
     }
