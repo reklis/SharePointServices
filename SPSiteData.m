@@ -13,7 +13,10 @@
 
 + (SPSiteData*) siteData
 {
-    return [[[SPSiteData alloc] initWithService:[SPServiceFactory siteDataService]] autorelease];
+    SPSoapService* svc = [SPServiceFactory makeService:@"/_vti_bin/SiteData.asmx"];
+    SPSiteData* siteDataSvc = [[[SPSiteData alloc] initWithService:svc] autorelease];
+    [svc release];
+    return siteDataSvc;
 }
 
 - (void) getListItems:(NSString*)listName

@@ -33,6 +33,7 @@ typedef enum SPFolderDataSourceStateEnum
 
 @interface SPFolderDataSource : NSObject <UITableViewDataSource>
 {
+    SPSiteData* siteData;
 }
 
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl;

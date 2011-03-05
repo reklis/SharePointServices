@@ -81,6 +81,12 @@
     return self;
 }
 
+- (void)dealloc {
+    [service release];
+    
+    [super dealloc];
+}
+
 - (NSString*) contextUrl
 {
     NSURL* u = [NSURL URLWithString:self.service.resourceUrl];

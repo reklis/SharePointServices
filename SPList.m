@@ -14,7 +14,10 @@
 
 + (SPList*) list
 {
-    return [[[SPList alloc] initWithService:[SPServiceFactory listService]] autorelease];
+    SPSoapService* svc = [SPServiceFactory makeService:@"/_vti_bin/Lists.asmx"];
+    SPList* listSvc = [[[SPList alloc] initWithService:svc] autorelease];
+    [svc release];
+    return listSvc;
 }
 
 - (void) getListCollection:(SPSoapRequestCompletedBlock)handler

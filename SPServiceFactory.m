@@ -31,22 +31,13 @@ static SPServiceSettings* _serviceSettings;
 
 + (SPSoapService*) makeService:(NSString*)resourcePath
 {
-    SPSoapService* svc = [[[SPSoapService alloc] init] autorelease];
+    SPSoapService* svc = [[SPSoapService alloc] init];
     
     SPServiceSettings* settings = [SPServiceFactory serviceSettings];
     svc.resourceUrl = [[settings sharedRootUrl] stringByAppendingString:resourcePath];
     svc.credentials = [settings sharedCredentials];
+    
     return svc;
-}
-
-+ (SPSoapService*) listService
-{
-    return [SPServiceFactory makeService:@"/_vti_bin/Lists.asmx"];
-}
-
-+ (SPSoapService*) siteDataService
-{
-    return [SPServiceFactory makeService:@"/_vti_bin/SiteData.asmx"];
 }
 
 @end

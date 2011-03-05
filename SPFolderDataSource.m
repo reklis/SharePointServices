@@ -25,6 +25,13 @@
     return i;
 }
 
+- (void)dealloc {
+    [url release];
+    [name release];
+    
+    [super dealloc];
+}
+
 @end
 
 
@@ -50,6 +57,26 @@
                                                                  filter:nil];
     return ds;
 }
+
+#pragma Initialization
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        siteData = [[SPSiteData siteData] retain];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [directoryContents release];
+    [filter release];
+    [siteData release];
+    
+    [super dealloc];
+}
+
+#pragma UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -110,8 +137,6 @@
 - (void) loadFolderAtUrl:(NSString*)url
 {
     self.dataSourceState = SPFolderDataSourceStateLoading;
-    
-    SPSiteData* siteData = [SPSiteData siteData];
     
     [siteData enumerateFolder:url withHandler:^(SPSoapRequest* folderReq) 
     {
