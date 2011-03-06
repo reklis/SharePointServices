@@ -40,6 +40,7 @@
 @synthesize directoryContents;
 @synthesize dataSourceState;
 @synthesize filter;
+@synthesize folderUrl;
 
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex
 {
@@ -72,6 +73,7 @@
     [directoryContents release];
     [filter release];
     [siteData release];
+    [folderUrl release];
     
     [super dealloc];
 }
@@ -136,6 +138,11 @@
 
 - (void) loadFolderAtUrl:(NSString*)url
 {
+    if (self.dataSourceState == SPFolderDataSourceStateLoading) {
+        return;
+    }
+    
+    self.folderUrl = url;
     self.dataSourceState = SPFolderDataSourceStateLoading;
     
     [siteData enumerateFolder:url withHandler:^(SPSoapRequest* folderReq) 
@@ -188,6 +195,11 @@
             self.dataSourceState = SPFolderDataSourceStateSucceeded;
         }
     }];
+}
+
+- (void) refresh
+{
+    [self loadFolderAtUrl:self.folderUrl];
 }
 
 - (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath

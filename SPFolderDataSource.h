@@ -39,14 +39,18 @@ typedef enum SPFolderDataSourceStateEnum
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl;
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex;
 
+@property (readwrite,nonatomic,retain) NSString* folderUrl;
 @property (readwrite,nonatomic,retain) NSString* filter;
 @property (readwrite,nonatomic,retain) NSArray* directoryContents;
-@property (readwrite,nonatomic,assign) SPFolderDataSourceState dataSourceState;
+
+@property (readwrite,assign) SPFolderDataSourceState dataSourceState;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void) loadFolderAtUrl:(NSString*)url;
+- (void) refresh;
+
 - (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath;
 
 @end
