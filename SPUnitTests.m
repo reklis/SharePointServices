@@ -101,10 +101,10 @@
 {
     SPList* list = [SPList list];
     
-    [list getList:@"Shared Documents" handler:^(SPSoapRequest* req){
+    [list getList:@"Calendar" handler:^(SPSoapRequest* req){
         STAssertHTTPOK(req);
         
-        NSArray* results = [req responseNodesForXPath:@"//sp:List/@Title"];
+        NSArray* results = [req responseNodesForXPath:@"//sp:List"];
         STAssertNotNil(results, @"results should not be nil");
         
         //[log write:[NSString stringWithFormat:@"%@", results]];
@@ -114,22 +114,49 @@
         if (results.count > 0) {
             XPathResult* r = [results objectAtIndex:0];
             STAssertNotNil(r, @"first object in array should not be nil");
-            STAssertEqualObjects(r.content, @"Shared Documents", @"result title not equal to list name searched");
             
             NSArray* fields = [req responseNodesForXPath:@"//sp:Field"];
             STAssertNotNil(fields, @"fields results should not be nil");
-            STAssertEquals((int)fields.count, (int)114, [NSString stringWithFormat:@"found %d", [fields count]]);
+            STAssertEquals((int)fields.count, (int)103, [NSString stringWithFormat:@"found %d", [fields count]]);
             
-            STAssertNil(r.attributes, @"should not be any attributes on matched attribute");
+            STAssertNotNil(r.attributes, @"attribute dictionary should not be nil");
+            //[log write:[NSString stringWithFormat:@"%@", r.attributes]];
+            STAssertTrue((r.attributes.count != 0), @"attribute count should not be zero");
             
-            NSString* listId = [r.attributes objectForKey:@"Name"];
+            NSString* listId = [r.attributes objectForKey:@"ID"];
+            
             [list getListItems:listId
-                      viewName:@"" query:@"" viewFields:@""
+                      viewName:@""
+                         query:@"<Query></Query>"
+                    viewFields:@"<ViewFields></ViewFields>"
                       rowLimit:@"0"
-                  queryOptions:@""
+                  queryOptions:@"<QueryOptions><ExpandRecurrences>TRUE</ExpandRecurrences></QueryOptions>"
                          webID:@""
-                       handler:^(SPSoapRequest* getListItemReq) {
+                       handler:^(SPSoapRequest* getListItemReq)
+            {
+                STAssertHTTPOK(getListItemReq);
                 
+                //[log write:[getListItemReq responseString]];
+                
+                __block int rowCount = 0;
+                [getListItemReq responseNodesForXPath:@"//z:row" usingBlock:^(XPathResult *r)
+                {
+                    STAssertNotNil(r, @"result should not be nil");
+                    
+                    NSString* eventName = [getListItemReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/@ows_Title"]];
+                    STAssertNotNil(eventName, @"title should not be nil");
+
+                    NSString* startDate = [getListItemReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/@ows_EventDate"]];
+                    STAssertNotNil(startDate, @"event date should not be nil");
+
+                    NSString* endDate = [getListItemReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/@ows_EndDate"]];
+                    STAssertNotNil(endDate, @"end date should not be nil");
+                    
+                    //[log write:[NSString stringWithFormat:@"title: %@ start: %@ end: %@", eventName, startDate, endDate]];
+
+                    ++rowCount;
+                }];
+                STAssertTrue(rowCount == 7, @"should have found some rows");
             }];
         }
     }];

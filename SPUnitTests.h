@@ -32,7 +32,7 @@
 }
 
 #if USE_APPLICATION_UNIT_TEST
-- (void) testAppDelegate;       // simple test on application
+- (void) testAppDelegate;
 #else
 
 - (void) testList_GetListCollection;

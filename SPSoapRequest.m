@@ -17,6 +17,8 @@
             @"http://www.w3.org/2001/XMLSchema-instance", @"xsi",
             @"http://www.w3.org/2001/XMLSchema", @"xsd",
             @"http://schemas.microsoft.com/sharepoint/soap/", @"sp",
+            @"urn:schemas-microsoft-com:rowset", @"rs",
+            @"#RowsetSchema", @"z",
          nil];
 }
 
