@@ -136,7 +136,7 @@
             {
                 STAssertHTTPOK(getListItemReq);
                 
-                [log write:[getListItemReq responseString]];
+                //[log write:[getListItemReq responseString]];
                 
                 __block int rowCount = 0;
                 [getListItemReq responseNodesForXPath:@"//z:row" usingBlock:^(XPathResult *r)
