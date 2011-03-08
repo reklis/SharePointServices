@@ -136,7 +136,7 @@
             {
                 STAssertHTTPOK(getListItemReq);
                 
-                //[log write:[getListItemReq responseString]];
+                [log write:[getListItemReq responseString]];
                 
                 __block int rowCount = 0;
                 [getListItemReq responseNodesForXPath:@"//z:row" usingBlock:^(XPathResult *r)
@@ -151,6 +151,16 @@
 
                     NSString* endDate = [getListItemReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/@ows_EndDate"]];
                     STAssertNotNil(endDate, @"end date should not be nil");
+                    
+                    NSString* location = [getListItemReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/@ows_Location"]];
+                    if (location != nil) {
+                        NSUInteger strlen = [location length];
+                        STAssertTrue(strlen != 0, @"if there is a location, it shouldn't be an empty string");
+                    }
+                    
+                    NSString* isAllDay = [getListItemReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/@ows_fAllDayEvent"]];
+                    STAssertNotNil(isAllDay, @"is all day should not be nil");
+                    STAssertTrue((([isAllDay isEqualToString:@"0"]) || ([isAllDay isEqualToString:@"1"])), @"'all day' flag should be 0 or 1");
                     
                     //[log write:[NSString stringWithFormat:@"title: %@ start: %@ end: %@", eventName, startDate, endDate]];
 
