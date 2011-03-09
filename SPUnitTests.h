@@ -44,6 +44,8 @@
 - (void) testSiteData_GetWeb;
 - (void) testSiteData_GetListItems;
 
+- (void) testRestrictedPort;
+
 #endif
 
 @end

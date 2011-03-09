@@ -247,6 +247,24 @@
     }];
 }
 
+- (void) testRestrictedPort
+{
+    ASIHTTPRequest* req = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://localhost:6666"]];
+    
+    [req setCompletionBlock:^(void) {
+        STAssertHTTPOK(req);
+        //[log write:[req responseString]];
+    }];
+    
+    [req setFailedBlock:^(void) {
+        STAssertNil([req error], @"request encountered error %@", [req error]);
+    }];
+    
+    [req startSynchronous];
+
+    STAssertNil([req error], @"request encountered error %@", [req error]);
+}
+
 //- (void) tearDown
 //{
 //    [super tearDown];
