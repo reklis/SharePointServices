@@ -10,6 +10,33 @@
 #import <UIKit/UIKit.h>
 
 #import "SharePointServices.h"
+#import "SPDataSource.h"
+
+@class SPFolderItem;
+
+@interface SPFolderDataSource : SPDataSource
+{
+@private
+    SPSiteData* siteData;
+}
+
++ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl;
++ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex;
+
+@property (readwrite,nonatomic,retain) NSString* folderUrl;
+@property (readwrite,nonatomic,retain) NSString* filter;
+@property (readwrite,nonatomic,retain) NSArray* directoryContents;
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+
+- (void) loadFolderAtUrl:(NSString*)url;
+- (void) refresh;
+
+- (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath;
+
+@end
+
 
 @interface SPFolderItem : NSObject
 {
@@ -23,34 +50,3 @@
 
 @end
 
-typedef enum SPFolderDataSourceStateEnum
-{
-    SPFolderDataSourceStateUnknown,
-    SPFolderDataSourceStateLoading,
-    SPFolderDataSourceStateSucceeded,
-    SPFolderDataSourceStateFailed
-} SPFolderDataSourceState;
-
-@interface SPFolderDataSource : NSObject <UITableViewDataSource>
-{
-    SPSiteData* siteData;
-}
-
-+ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl;
-+ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex;
-
-@property (readwrite,nonatomic,retain) NSString* folderUrl;
-@property (readwrite,nonatomic,retain) NSString* filter;
-@property (readwrite,nonatomic,retain) NSArray* directoryContents;
-
-@property (readwrite,assign) SPFolderDataSourceState dataSourceState;
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section;
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
-
-- (void) loadFolderAtUrl:(NSString*)url;
-- (void) refresh;
-
-- (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath;
-
-@end

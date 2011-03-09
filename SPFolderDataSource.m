@@ -38,7 +38,6 @@
 @implementation SPFolderDataSource
 
 @synthesize directoryContents;
-@synthesize dataSourceState;
 @synthesize filter;
 @synthesize folderUrl;
 
@@ -83,7 +82,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     switch (self.dataSourceState) {
-        case SPFolderDataSourceStateSucceeded:
+        case SPDataSourceStateSucceeded:
             return [self.directoryContents count];
         default:
             return 1;
@@ -92,33 +91,32 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"CellIdentifier";
+    static NSString *cellId = @"folderItemCell";
     
-    // Dequeue or create a cell of the appropriate type.
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId] autorelease];
     }
     
-    [cell.accessoryView.subviews performSelector:@selector(removeFromSuperview)];
+    //[cell.accessoryView.subviews performSelector:@selector(removeFromSuperview)];
     
     switch (self.dataSourceState) {
-        case SPFolderDataSourceStateUnknown:
-        case SPFolderDataSourceStateLoading:
+        case SPDataSourceStateUnknown:
+        case SPDataSourceStateLoading:
             cell.accessoryType = UITableViewCellAccessoryNone;
             cell.textLabel.text = NSLocalizedString(@"Loading...", @"Loading...");
-            [cell.accessoryView addSubview:[[[UIActivityIndicatorView alloc] init] autorelease]];
+            //[cell.accessoryView addSubview:[[[UIActivityIndicatorView alloc] init] autorelease]];
             
             break;
         
-        case SPFolderDataSourceStateFailed:
+        case SPDataSourceStateFailed:
             cell.accessoryType = UITableViewCellAccessoryNone;
             cell.textLabel.text = NSLocalizedString(@"Error loading contents", @"Error loading contents");
             
             break;
             
         
-        case SPFolderDataSourceStateSucceeded:
+        case SPDataSourceStateSucceeded:
         {
             SPFolderItem* item = [self itemAtPath:indexPath];
             
@@ -138,19 +136,19 @@
 
 - (void) loadFolderAtUrl:(NSString*)url
 {
-    if (self.dataSourceState == SPFolderDataSourceStateLoading) {
+    if (self.dataSourceState == SPDataSourceStateLoading) {
         return;
     }
     
     self.folderUrl = url;
-    self.dataSourceState = SPFolderDataSourceStateLoading;
+    self.dataSourceState = SPDataSourceStateLoading;
     
     [siteData enumerateFolder:url withHandler:^(SPSoapRequest* folderReq) 
     {
         if (folderReq.responseStatusCode != 200) {
             NSLog(@"SPSiteData::EnumerateFolder Error: %@", folderReq.responseStatusMessage);
             
-            self.dataSourceState = SPFolderDataSourceStateFailed;
+            self.dataSourceState = SPDataSourceStateFailed;
         } else {
             __block NSMutableArray* dir = [NSMutableArray array];
             
@@ -192,7 +190,7 @@
             
             self.directoryContents = dir;
             
-            self.dataSourceState = SPFolderDataSourceStateSucceeded;
+            self.dataSourceState = SPDataSourceStateSucceeded;
         }
     }];
 }
