@@ -39,8 +39,6 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-
     self.clearsSelectionOnViewWillAppear = YES;
     
     self.tableView.dataSource = _calendarDataSource;
@@ -51,6 +49,8 @@
                              context:NULL];
     
     [_calendarDataSource loadCalendarNamed:_calendarName];
+    
+    [super viewDidLoad];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context

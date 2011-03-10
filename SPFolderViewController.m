@@ -129,6 +129,8 @@
     
     [self.folderDataSource removeObserver:self
                                forKeyPath:@"dataSourceState"];
+    
+    [super viewDidUnload];
 }
 
 

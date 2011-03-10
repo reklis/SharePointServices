@@ -47,7 +47,8 @@
     [super viewDidLoad];
 
     self.clearsSelectionOnViewWillAppear = YES;
- 
+    self.tableView.sectionIndexMinimumDisplayRowCount = 25;
+    
     self.contactDataSource = [[[SPContactDataSource alloc] init] autorelease];
     self.tableView.dataSource = self.contactDataSource;
     
@@ -68,14 +69,14 @@
 
 - (void)viewDidUnload
 {
-    [super viewDidUnload];
-    
     [self.contactDataSource removeObserver:self
                                 forKeyPath:@"dataSourceState"];
     
     [self setContactListName:nil];
     [self setContactDataSource:nil];
     [self setTableView:nil];
+    
+    [super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -99,7 +100,6 @@
 {
     return nil;
 }
-
 
 #pragma mark UITableViewDelegate
 
