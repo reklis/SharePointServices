@@ -42,8 +42,8 @@
     [req setDomain:self.credentials.domain];
     
     NSMutableDictionary* soapHeaders = [NSMutableDictionary dictionaryWithCapacity:2];
-    [soapHeaders setValue:@"text/xml; charset=utf-8" forKey:@"Content-Type"];
-    [soapHeaders setValue:soapAction forKey:@"SOAPAction"];
+    [soapHeaders setObject:@"text/xml; charset=utf-8" forKey:@"Content-Type"];
+    [soapHeaders setObject:soapAction forKey:@"SOAPAction"];
     [req setRequestHeaders:soapHeaders];
     
     [req setRequestMethod:@"POST"];

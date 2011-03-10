@@ -48,10 +48,6 @@
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    //if ([super respondsToSelector:@selector(observeValueForKeyPath:ofObject:change:context:)]) {
-    //    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    //}
-    
     if ([keyPath isEqualToString:@"dataSourceState"]) {
         [self.tableView reloadData];
     }
