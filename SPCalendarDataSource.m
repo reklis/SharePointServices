@@ -33,6 +33,11 @@
     return event;
 }
 
+- (NSString*) description
+{
+    return [NSString stringWithFormat:@"%@ %@", self.title, self.formattedTimespan];
+}
+
 - (NSString*) formattedTimespan
 {
     NSDateFormatter* timespanFormatter = [[[NSDateFormatter alloc] init] autorelease];
@@ -83,18 +88,19 @@
     
     self.dataSourceState = SPDataSourceStateLoading;
     
-    [list getList:listName handler:^(SPSoapRequest* req){
+    [list getList:listName handler:^(SPSoapRequest* req)
+    {
         if (req.responseStatusCode != 200) {
             self.dataSourceState = SPDataSourceStateFailed;
             return;
         }
-        
+
         NSString* listId = [req responseNodeContentForXPath:@"//sp:List/@ID"];
-        
+
         NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
         [dateFormatter setLocale:[NSLocale currentLocale]];
         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        
+
         // TODO: adjust query such that we avoid events that are too old or too far off into the future
         [list getListItems:listId
                   viewName:@""
@@ -104,55 +110,68 @@
               queryOptions:@"<QueryOptions><ExpandRecurrences>TRUE</ExpandRecurrences></QueryOptions>"
                      webID:@""
                    handler:^(SPSoapRequest* getListItemReq)
-         {
-             if (getListItemReq.responseStatusCode != 200) {
-                 self.dataSourceState = SPDataSourceStateFailed;
-                 return;
-             }
-             
-             __block NSMutableDictionary* myEvents = [NSMutableDictionary dictionary];
-             NSCalendar* gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-             
-             [getListItemReq responseNodesForXPath:@"//z:row" usingBlock:^(XPathResult *r)
-              {
-                  NSString* eventName = [r.attributes objectForKey:@"ows_Title"];
-                  NSString* startDate = [r.attributes objectForKey:@"ows_EventDate"];
-                  NSString* endDate = [r.attributes objectForKey:@"@ows_EndDate"];
-                  NSString* location = [r.attributes objectForKey:@"@ows_Location"];
-                  NSString* isAllDay = [r.attributes objectForKey:@"@ows_fAllDayEvent"];
-                  
-                  SPCalendarItem* event = [SPCalendarItem calendarItemWithTitle:eventName
-                                                                          start:[dateFormatter dateFromString:startDate]
-                                                                            end:[dateFormatter dateFromString:endDate]
-                                                                       location:location
-                                                                         allDay:[isAllDay isEqualToString:@"YES"]];
-                  
-                  NSDateComponents *dateComponents = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:event.startDate];
-                  
-                  NSDate* k = [gregorian dateFromComponents:dateComponents];
-                  
-                  if (![[myEvents allKeys] containsObject:k]) {
-                      [myEvents setObject:[NSMutableArray array] forKey:k];
-                  }
-                  
-                  NSMutableArray* a = (NSMutableArray*) [myEvents objectForKey:k];
-                  [a addObject:event];
-              }];
-             
-             self.events = myEvents;
-             
-             self.eventDays = [[self.events allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-             {
-                 NSDate* d1 = (NSDate*)obj1;
-                 NSDate* d2 = (NSDate*)obj2;
-                 
-                 return [d1 compare:d2];
-             }];
-             
-             [gregorian release];
-             
-             self.dataSourceState = SPDataSourceStateSucceeded;
-         }];
+        {
+            if (getListItemReq.responseStatusCode != 200) {
+                self.dataSourceState = SPDataSourceStateFailed;
+                return;
+            }
+
+            __block NSMutableDictionary* myEvents = [NSMutableDictionary dictionary];
+            NSCalendar* gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+
+            [getListItemReq responseNodesForXPath:@"//z:row" usingBlock:^(XPathResult *r)
+            {
+                NSString* eventName = [r.attributes objectForKey:@"ows_Title"];
+                NSString* startDate = [r.attributes objectForKey:@"ows_EventDate"];
+                NSString* endDate = [r.attributes objectForKey:@"ows_EndDate"];
+                NSString* location = [r.attributes objectForKey:@"ows_Location"];
+                NSString* isAllDay = [r.attributes objectForKey:@"ows_fAllDayEvent"];
+
+                SPCalendarItem* event = [SPCalendarItem calendarItemWithTitle:eventName
+                                                                        start:[dateFormatter dateFromString:startDate]
+                                                                          end:[dateFormatter dateFromString:endDate]
+                                                                     location:location
+                                                                       allDay:[isAllDay isEqualToString:@"YES"]];
+
+                NSDateComponents *dateComponents = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit)
+                                                                fromDate:event.startDate];
+
+                NSDate* k = [gregorian dateFromComponents:dateComponents];
+
+                if (![[myEvents allKeys] containsObject:k]) {
+                    [myEvents setObject:[NSMutableArray array] forKey:k];
+                }
+
+                NSMutableArray* a = (NSMutableArray*) [myEvents objectForKey:k];
+                [a addObject:event];
+                
+                NSLog(@"Indexed %@", event);
+            }];
+
+            [gregorian release];
+
+            self.events = myEvents;
+            
+            self.eventDays = [[self.events allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+            {
+                NSDate* d1 = (NSDate*)obj1;
+                NSDate* d2 = (NSDate*)obj2;
+
+                return [d1 compare:d2];
+            }];
+
+            for (NSMutableArray* a in [self.events allValues]) {
+                [a sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
+                {
+                    SPCalendarItem* i1 = (SPCalendarItem*) obj1;
+                    SPCalendarItem* i2 = (SPCalendarItem*) obj2;
+                    
+                    return [i1.startDate compare:i2.startDate];
+                }];
+            }
+
+            self.dataSourceState = SPDataSourceStateSucceeded;
+        }];
     }];
 }
 
@@ -184,7 +203,7 @@
             NSDate* d = [self.eventDays objectAtIndex:section];
             
             NSDateFormatter* headerFormatter = [[[NSDateFormatter alloc] init] autorelease];
-            [headerFormatter setDateStyle:NSDateFormatterShortStyle];
+            [headerFormatter setDateStyle:NSDateFormatterFullStyle];
             
             return [headerFormatter stringFromDate:d];
         }
@@ -214,7 +233,8 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
+                                       reuseIdentifier:cellId] autorelease];
     }
     
     cell.accessoryType = UITableViewCellAccessoryNone;

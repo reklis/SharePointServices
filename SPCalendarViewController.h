@@ -3,7 +3,7 @@
 //  SharePointClient
 //
 //  Created by Steven Fusco on 3/8/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 Cibo Technology, LLC. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
