@@ -10,6 +10,8 @@
 
 #import "SPContactDataSource.h"
 
+@protocol SPContactViewControllerDelegate;
+
 @interface SPContactViewController : UITableViewController
 {
 @private
@@ -19,5 +21,17 @@
 
 @property (readwrite,nonatomic,retain) NSString* contactListName;
 @property (readwrite,nonatomic,retain) SPContactDataSource* contactDataSource;
+
+@property (readwrite,nonatomic,assign) id<SPContactViewControllerDelegate> delegate;
+
+@end
+
+
+
+@protocol SPContactViewControllerDelegate <NSObject>
+
+@optional
+
+- (void) contactViewController:(SPContactViewController*)viewController didSelectContact:(SPContact*)contact;
 
 @end

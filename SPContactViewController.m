@@ -11,6 +11,8 @@
 
 @implementation SPContactViewController
 
+@synthesize delegate;
+
 @synthesize contactDataSource=_contactDataSource;
 @synthesize contactListName=_contactListName;
 
@@ -64,7 +66,6 @@
     }
 }
 
-
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -104,14 +105,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+    if ([delegate respondsToSelector:@selector(contactViewController:didSelectContact:)]) {
+        SPContact* c = [self.contactDataSource itemAtPath:indexPath];
+        [delegate contactViewController:self didSelectContact:c];
+    }
 }
 
 @end
