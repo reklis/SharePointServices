@@ -66,12 +66,12 @@
 
 - (void)viewDidUnload
 {
+    [super viewDidUnload];
+    
     [_calendarDataSource removeObserver:self
                              forKeyPath:@"dataSourceState"];
     
     [self setTableView:nil];
-    
-    [super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
