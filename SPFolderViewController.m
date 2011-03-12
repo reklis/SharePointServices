@@ -48,6 +48,8 @@
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    self.contentSizeForViewInPopover = CGSizeMake(320, 44*self.folderDataSource.directoryContents.count);
+    
     if ([keyPath isEqualToString:@"dataSourceState"]) {
         [self.tableView reloadData];
     }

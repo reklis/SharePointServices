@@ -188,6 +188,12 @@
                 }
             }];
             
+            [dir sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                SPFolderItem* i1 = (SPFolderItem*) obj1;
+                SPFolderItem* i2 = (SPFolderItem*) obj2;
+                return [i1.name compare:i2.name];
+            }];
+            
             self.directoryContents = dir;
             
             self.dataSourceState = SPDataSourceStateSucceeded;
