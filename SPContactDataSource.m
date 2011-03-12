@@ -35,6 +35,11 @@
 
 - (NSString*) description
 {
+    return [self formattedName];
+}
+
+- (NSString*) formattedName
+{
     return [NSString stringWithFormat:@"%@ %@", firstName, lastName];
 }
 

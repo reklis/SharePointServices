@@ -44,4 +44,6 @@
 @property (readwrite,nonatomic,retain) NSString* jobTitle;
 @property (readwrite,nonatomic,retain) NSString* workPhone;
 
+- (NSString*) formattedName;
+
 @end
