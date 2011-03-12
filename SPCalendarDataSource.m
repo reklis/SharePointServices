@@ -229,11 +229,14 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellId = @"calendarItemCell";
+    static NSString* calCellId = @"calendarItemCell";
+    static NSString* transitionCellId = @"transitionCellId";
     
+    
+    NSString* cellId = (self.dataSourceState == SPDataSourceStateSucceeded) ? calCellId : transitionCellId;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue2
+        cell = [[[UITableViewCell alloc] initWithStyle:(self.dataSourceState == SPDataSourceStateSucceeded) ? UITableViewCellStyleValue2 : UITableViewCellStyleDefault
                                        reuseIdentifier:cellId] autorelease];
     }
     
@@ -243,12 +246,10 @@
         case SPDataSourceStateUnknown:
         case SPDataSourceStateLoading:
             cell.textLabel.text = NSLocalizedString(@"Loading...", @"Loading...");
-            
             break;
             
         case SPDataSourceStateFailed:
             cell.textLabel.text = NSLocalizedString(@"Error loading contents", @"Error loading contents");
-            
             break;
             
             
