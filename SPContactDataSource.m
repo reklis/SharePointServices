@@ -114,7 +114,7 @@
                    NSMutableArray* a = (NSMutableArray*) [myContacts objectForKey:k];
                    [a addObject:c];
                    
-                   NSLog(@"Indexed %@", c); 
+                   //NSLog(@"Indexed %@", c); 
                }];
               
               self.contacts = myContacts;

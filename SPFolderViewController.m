@@ -12,8 +12,10 @@
 @implementation SPFolderViewController
 
 @synthesize delegate;
-@synthesize directoryUrl;
-@synthesize folderDataSource;
+
+@synthesize directoryUrl = _directoryUrl;
+@synthesize directoryFilter = _directoryFilter;
+@synthesize folderDataSource = _folderDataSource;
 
 #pragma mark Initialization
 
@@ -36,9 +38,10 @@
     
     self.clearsSelectionOnViewWillAppear = YES;
     
-    self.folderDataSource = [SPFolderDataSource folderDataSourceForUrl:self.directoryUrl];
+    self.folderDataSource = [SPFolderDataSource folderDataSourceForUrl:self.directoryUrl filter:self.directoryFilter];
 
     self.tableView.dataSource = self.folderDataSource;
+    self.clearsSelectionOnViewWillAppear = YES;
 
     [self.folderDataSource addObserver:self
                             forKeyPath:@"dataSourceState"
@@ -57,6 +60,11 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return YES;
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [self.folderDataSource refresh];
 }
 
 #pragma mark UITableViewDataSource
@@ -114,8 +122,6 @@
     }
 }
 
-
-#pragma mark -
 #pragma mark Memory management
 
 - (void)didReceiveMemoryWarning {
@@ -126,20 +132,21 @@
 }
 
 - (void)viewDidUnload {
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
+    [self setDirectoryFilter:nil];
+    [self setDirectoryUrl:nil];
     
     [self.folderDataSource removeObserver:self
                                forKeyPath:@"dataSourceState"];
+    [self setFolderDataSource:nil];
     
     [super viewDidUnload];
 }
 
 
 - (void)dealloc {
-    [folderDataSource release];
-    [directoryUrl release];
-    
+    [_folderDataSource release];
+    [_directoryUrl release];
+    [_directoryFilter release];
     [super dealloc];
 }
 

@@ -154,8 +154,6 @@
             
             [folderReq responseNodesForXPath:@"//sp:_sFPUrl" usingBlock:^(XPathResult* r)
             {
-                NSLog(@"%@", r);
-                
                 NSString* itemUrl = [siteData.contextUrl stringByAppendingString:
                                      [folderReq responseNodeContentForXPath:[r.xpath stringByAppendingString:@"/*[1]"]]];
                 

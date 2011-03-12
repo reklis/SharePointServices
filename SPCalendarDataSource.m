@@ -145,7 +145,7 @@
                 NSMutableArray* a = (NSMutableArray*) [myEvents objectForKey:k];
                 [a addObject:event];
                 
-                NSLog(@"Indexed %@", event);
+                //NSLog(@"Indexed %@", event);
             }];
 
             [gregorian release];

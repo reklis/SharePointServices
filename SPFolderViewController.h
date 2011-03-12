@@ -22,12 +22,17 @@
 
 @interface SPFolderViewController : UITableViewController <SPFolderViewControllerDelegate>
 {
-    SPFolderDataSource* folderDataSource;
+@private
+    SPFolderDataSource* _folderDataSource;
+    NSString* _directoryUrl;
+    NSString* _directoryFilter;
 }
 
 @property (readwrite,nonatomic,assign) id<SPFolderViewControllerDelegate> delegate; // weak reference
 
 @property (readwrite,nonatomic,retain) NSString* directoryUrl;
+@property (readwrite,nonatomic,retain) NSString* directoryFilter;
+
 @property (readwrite,nonatomic,retain) SPFolderDataSource* folderDataSource;
 
 @end
