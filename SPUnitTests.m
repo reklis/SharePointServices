@@ -74,12 +74,12 @@
     SPList* list = [SPList list];
     
     [list getListCollection:^(SPSoapRequest* req){
-        STAssertNotNil(req, @"Request nil");
-        STAssertNotNil([req responseString], @"response string nil");
+        STAssertHTTPOK(req);
+        
         //[log write:[req responseString]];
-        STAssertEquals([req responseStatusCode], HTTPStatusOK, [req responseStatusMessage]);
         
         __block int blockExecCount = 0;
+        
         [req responseNodesForXPath:@"//sp:List" usingBlock:^(XPathResult* r) {
             STAssertNotNil(r, @"result should not be nil");
             //[log write:[NSString stringWithFormat:@"%@", r]];
@@ -299,23 +299,6 @@
     }];
 }
 
-//- (void) testRestrictedPort
-//{
-//    ASIHTTPRequest* req = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:@"http://localhost:6666"]];
-//    
-//    [req setCompletionBlock:^(void) {
-//        STAssertHTTPOK(req);
-//        //[log write:[req responseString]];
-//    }];
-//    
-//    [req setFailedBlock:^(void) {
-//        STAssertNil([req error], @"request encountered error %@", [req error]);
-//    }];
-//    
-//    [req startSynchronous];
-//
-//    STAssertNil([req error], @"request encountered error %@", [req error]);
-//}
 
 //- (void) tearDown
 //{
