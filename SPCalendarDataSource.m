@@ -236,7 +236,7 @@
     NSString* cellId = (self.dataSourceState == SPDataSourceStateSucceeded) ? calCellId : transitionCellId;
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:(self.dataSourceState == SPDataSourceStateSucceeded) ? UITableViewCellStyleValue2 : UITableViewCellStyleDefault
+        cell = [[[UITableViewCell alloc] initWithStyle:(self.dataSourceState == SPDataSourceStateSucceeded) ? UITableViewCellStyleSubtitle : UITableViewCellStyleDefault
                                        reuseIdentifier:cellId] autorelease];
     }
     
