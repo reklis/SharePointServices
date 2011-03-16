@@ -36,6 +36,7 @@
 {
     [super viewDidLoad];
     
+    self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
     self.clearsSelectionOnViewWillAppear = YES;
     
     self.folderDataSource = [SPFolderDataSource folderDataSourceForUrl:self.directoryUrl filter:self.directoryFilter];
