@@ -68,8 +68,13 @@
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [_calendarDataSource removeObserver:self
-                             forKeyPath:@"dataSourceState"];
+    @try {
+        [_calendarDataSource removeObserver:self
+                                 forKeyPath:@"dataSourceState"];
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
 }
 
 - (void)viewDidUnload

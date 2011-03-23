@@ -75,8 +75,14 @@
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.folderDataSource removeObserver:self
-                               forKeyPath:@"dataSourceState"];
+    @try {
+        [self.folderDataSource removeObserver:self
+                                   forKeyPath:@"dataSourceState"];
+
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
 }
 
 #pragma mark UITableViewDataSource

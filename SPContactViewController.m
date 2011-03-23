@@ -75,9 +75,14 @@
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.contactDataSource removeObserver:self
-                                forKeyPath:@"dataSourceState"];
-    
+    @try {
+        [self.contactDataSource removeObserver:self
+                                    forKeyPath:@"dataSourceState"];
+
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
 }
 
 - (void)viewDidUnload
