@@ -43,6 +43,7 @@
 @property (readwrite,nonatomic,retain) NSString* email;
 @property (readwrite,nonatomic,retain) NSString* jobTitle;
 @property (readwrite,nonatomic,retain) NSString* workPhone;
+@property (readwrite,nonatomic,retain) NSString* mobilePhone;
 
 - (NSString*) formattedName;
 

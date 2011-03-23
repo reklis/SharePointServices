@@ -32,6 +32,17 @@
 @synthesize email;
 @synthesize jobTitle;
 @synthesize workPhone;
+@synthesize mobilePhone;
+
+- (void)dealloc {
+    [lastName release];
+    [firstName release];
+    [email release];
+    [jobTitle release];
+    [workPhone release];
+    [mobilePhone release];
+    [super dealloc];
+}
 
 - (NSString*) description
 {
@@ -104,6 +115,7 @@
                    c.email = [r.attributes objectForKey:@"ows_Email"];
                    c.jobTitle = [r.attributes objectForKey:@"ows_JobTitle"];
                    c.workPhone = [r.attributes objectForKey:@"ows_WorkPhone"];
+                   c.mobilePhone = [r.attributes objectForKey:@"ows_CellPhone"];
                    
                    NSString* k = [c.lastName substringToIndex:1];
                    
