@@ -43,11 +43,6 @@
 
     self.tableView.dataSource = self.folderDataSource;
     self.clearsSelectionOnViewWillAppear = YES;
-
-    [self.folderDataSource addObserver:self
-                            forKeyPath:@"dataSourceState"
-                               options:NSKeyValueObservingOptionNew
-                               context:NULL];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -69,7 +64,19 @@
 
 - (void) viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    [self.folderDataSource addObserver:self
+                            forKeyPath:@"dataSourceState"
+                               options:NSKeyValueObservingOptionNew
+                               context:NULL];
     [self.folderDataSource refresh];
+}
+
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [self.folderDataSource removeObserver:self
+                               forKeyPath:@"dataSourceState"];
 }
 
 #pragma mark UITableViewDataSource
@@ -140,8 +147,6 @@
     [self setDirectoryFilter:nil];
     [self setDirectoryUrl:nil];
     
-    [self.folderDataSource removeObserver:self
-                               forKeyPath:@"dataSourceState"];
     [self setFolderDataSource:nil];
     
     [super viewDidUnload];

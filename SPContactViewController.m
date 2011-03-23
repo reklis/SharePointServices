@@ -52,12 +52,17 @@
     self.contactDataSource = [[[SPContactDataSource alloc] init] autorelease];
     self.tableView.dataSource = self.contactDataSource;
     
+    [self.contactDataSource loadContactsListNamed:self.contactListName];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [self.contactDataSource addObserver:self
                              forKeyPath:@"dataSourceState"
                                 options:NSKeyValueObservingOptionNew
                                 context:NULL];
     
-    [self.contactDataSource loadContactsListNamed:self.contactListName];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -67,11 +72,16 @@
     }
 }
 
-- (void)viewDidUnload
+- (void) viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     [self.contactDataSource removeObserver:self
                                 forKeyPath:@"dataSourceState"];
     
+}
+
+- (void)viewDidUnload
+{
     [self setContactListName:nil];
     [self setContactDataSource:nil];
     [self setTableView:nil];

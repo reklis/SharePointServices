@@ -43,14 +43,19 @@
     
     self.tableView.dataSource = _calendarDataSource;
     
+    [_calendarDataSource loadCalendarNamed:_calendarName];
+    
+    [super viewDidLoad];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [_calendarDataSource addObserver:self
                           forKeyPath:@"dataSourceState"
                              options:NSKeyValueObservingOptionNew
                              context:NULL];
-    
-    [_calendarDataSource loadCalendarNamed:_calendarName];
-    
-    [super viewDidLoad];
+    [self.tableView reloadData];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -60,12 +65,16 @@
     }
 }
 
+- (void) viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [_calendarDataSource removeObserver:self
+                             forKeyPath:@"dataSourceState"];
+}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    
-    [_calendarDataSource removeObserver:self
-                             forKeyPath:@"dataSourceState"];
     
     [self setTableView:nil];
 }
