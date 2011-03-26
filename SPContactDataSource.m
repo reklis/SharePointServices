@@ -51,7 +51,17 @@
 
 - (NSString*) formattedName
 {
-    return [NSString stringWithFormat:@"%@ %@", firstName, lastName];
+    if (firstName && lastName) {
+        return [NSString stringWithFormat:@"%@ %@", firstName, lastName];
+    } else {
+        if (firstName) {
+            return firstName;
+        } else if (lastName) {
+            return lastName;
+        } else {
+            return @"";
+        }
+    }
 }
 
 @end
@@ -234,7 +244,7 @@
         {
             SPContact* item = [self itemAtPath:indexPath];
             
-            cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", item.firstName, item.lastName];
+            cell.textLabel.text = [item formattedName];
             cell.detailTextLabel.text = item.jobTitle;
         }
             break;
