@@ -7,6 +7,7 @@
 //
 
 #import "SPSoapRequest.h"
+#import "ASIDownloadCache.h"
 
 @implementation SPSoapRequest
 
@@ -39,6 +40,12 @@
     [[self responseData] findXPath:query
                    usingNamespaces:[SPSoapRequest sharepointNamespaces]
                       executeBlock:handler];
+}
+
+- (void) buildRequestHeaders
+{
+    [super buildRequestHeaders];
+    [self setDownloadCache:[ASIDownloadCache sharedCache]]; // HACK: by default, parent sets this to nil when not doing HTTP GET, we set it back here
 }
 
 @end
