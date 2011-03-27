@@ -117,26 +117,24 @@
 
 #pragma mark UITableViewDelegate
 
-- (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    /*
-     When a row is selected, set the detail view controller's detail item to the item associated with the selected row.
-     */
-    
+- (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     SPFolderItem* item = [self.folderDataSource itemAtPath:indexPath];
     
-    if ([self.delegate respondsToSelector:@selector(folderViewController:didSelectItem:)]) {
-        [self.delegate folderViewController:self didSelectItem:item];
-    }
-    
-    if (item.isFolder) {
-        SPFolderViewController* nestedController = [[[SPFolderViewController alloc] init] autorelease];
-        nestedController.directoryUrl = item.url;
-        nestedController.delegate = self.delegate;
-        nestedController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
-        nestedController.title = [[NSURL URLWithString:[item.url stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]] lastPathComponent];
+    if (item) {
+        if ([self.delegate respondsToSelector:@selector(folderViewController:didSelectItem:)]) {
+            [self.delegate folderViewController:self didSelectItem:item];
+        }
         
-        [self.navigationController pushViewController:nestedController animated:YES];
+        if (item.isFolder) {
+            SPFolderViewController* nestedController = [[[SPFolderViewController alloc] init] autorelease];
+            nestedController.directoryUrl = item.url;
+            nestedController.delegate = self.delegate;
+            nestedController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+            nestedController.title = [[NSURL URLWithString:[item.url stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]] lastPathComponent];
+            
+            [self.navigationController pushViewController:nestedController animated:YES];
+        }
     }
 }
 

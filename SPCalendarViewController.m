@@ -111,9 +111,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SPCalendarItem* selectedItem = [_calendarDataSource itemAtPath:indexPath];
-    NSLog(@"selected %@", selectedItem);
-    [self dismissModalViewControllerAnimated:YES];
+    if (_calendarDataSource.dataSourceState == SPDataSourceStateSucceeded) {
+        SPCalendarItem* selectedItem = [_calendarDataSource itemAtPath:indexPath];
+        NSLog(@"selected %@", selectedItem);
+        [self dismissModalViewControllerAnimated:YES];
+    }
 }
 
 @end

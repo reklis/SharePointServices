@@ -206,8 +206,12 @@
 
 - (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath
 {
-    SPFolderItem* item = [self.directoryContents objectAtIndex:indexPath.row];
-    return item;
+    if (SPDataSourceStateSucceeded == self.dataSourceState) {
+        SPFolderItem* item = [self.directoryContents objectAtIndex:indexPath.row];
+        return item;
+    } else {
+        return nil;
+    }
 }
 
 @end
