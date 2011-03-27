@@ -30,6 +30,7 @@
      withHandler:(SPSoapRequestCompletedBlock)handler
 {
     __block SPSoapRequest* req = [[[SPSoapRequest alloc] initWithURL:[NSURL URLWithString:self.resourceUrl]] autorelease];
+    req.cacheStoragePolicy = ASICachePermanentlyCacheStoragePolicy;
     
     SPServiceSettings* settings = [SPServiceFactory serviceSettings];
     
