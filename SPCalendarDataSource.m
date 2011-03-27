@@ -90,7 +90,7 @@
     
     [list getList:listName handler:^(SPSoapRequest* req)
     {
-        if (req.responseStatusCode != 200) {
+        if (req.error) {
             self.dataSourceState = SPDataSourceStateFailed;
             return;
         }
@@ -111,7 +111,7 @@
                      webID:@""
                    handler:^(SPSoapRequest* getListItemReq)
         {
-            if (getListItemReq.responseStatusCode != 200) {
+            if (getListItemReq.error) {
                 self.dataSourceState = SPDataSourceStateFailed;
                 return;
             }

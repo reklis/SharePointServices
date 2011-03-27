@@ -145,7 +145,7 @@
     
     [siteData enumerateFolder:url withHandler:^(SPSoapRequest* folderReq) 
     {
-        if (folderReq.responseStatusCode != 200) {
+        if (folderReq.error) {
             NSLog(@"SPSiteData::EnumerateFolder Error: %@", folderReq.responseStatusMessage);
             
             self.dataSourceState = SPDataSourceStateFailed;
