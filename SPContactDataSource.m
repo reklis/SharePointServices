@@ -80,6 +80,8 @@
 }
 
 - (void)dealloc {
+    [contacts release];
+    [contactIndexes release];
     [list release];
     [super dealloc];
 }

@@ -15,7 +15,6 @@
 {
     SPSoapService* svc = [SPServiceFactory makeService:@"/_vti_bin/SiteData.asmx"];
     SPSiteData* siteDataSvc = [[[SPSiteData alloc] initWithService:svc] autorelease];
-    [svc release];
     return siteDataSvc;
 }
 

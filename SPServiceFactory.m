@@ -31,7 +31,7 @@ static SPServiceSettings* _serviceSettings;
 
 + (SPSoapService*) makeService:(NSString*)resourcePath
 {
-    SPSoapService* svc = [[SPSoapService alloc] init];
+    SPSoapService* svc = [[[SPSoapService alloc] init] autorelease];
     
     SPServiceSettings* settings = [SPServiceFactory serviceSettings];
     svc.resourceUrl = [[settings sharedRootUrl] stringByAppendingString:resourcePath];
