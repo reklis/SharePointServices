@@ -42,10 +42,10 @@
                       executeBlock:handler];
 }
 
-- (void) buildRequestHeaders
-{
-    [super buildRequestHeaders];
-    [self setDownloadCache:[ASIDownloadCache sharedCache]]; // HACK: by default, parent sets this to nil when not doing HTTP GET, we set it back here
-}
+//- (void) buildRequestHeaders
+//{
+//    [super buildRequestHeaders];
+//    [self setDownloadCache:[ASIDownloadCache sharedCache]]; // HACK: by default, parent sets this to nil when not doing HTTP GET, we set it back here
+//}
 
 @end
