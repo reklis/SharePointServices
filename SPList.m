@@ -48,4 +48,21 @@
               withHandler:handler];
 }
 
+- (void) updateListItems:(NSString*)listName updates:(NSString*)batchUpdateXml handler:(SPSoapRequestCompletedBlock)handler
+{
+    [self.service execute:@"http://schemas.microsoft.com/sharepoint/soap/UpdateListItems"
+              requestBody:[NSString stringWithFormat:@"<UpdateListItems xmlns=\"http://schemas.microsoft.com/sharepoint/soap/\"><listName>%@</listName><updates>%@</updates></UpdateListItems>",
+                           listName, batchUpdateXml]
+              withHandler:handler];
+}
+
+- (void) deleteListItemId:(NSString*)listItemId inList:(NSString*)listName handler:(SPSoapRequestCompletedBlock)handler
+{
+    // wrapper method for batch update to remove a single item, not part of the soap spec
+    
+    NSString* viewName = @""; // empty view name == use the default view
+    NSString* batchUpdateXml = [NSString stringWithFormat:@"<Batch OnError=\"Continue\" ListVersion=\"1\" ViewName=\"%@\"><Method ID=\"1\" Cmd=\"Delete\"><Field Name='ID'>%@</Field></Method></Batch>", viewName, listItemId];
+    [self updateListItems:listName updates:batchUpdateXml handler:handler];
+}
+
 @end

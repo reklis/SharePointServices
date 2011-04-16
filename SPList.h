@@ -25,5 +25,11 @@
          queryOptions:(NSString*)queryOptions 
                 webID:(NSString*)webID
               handler:(SPSoapRequestCompletedBlock)handler;
+- (void) updateListItems:(NSString*)listName updates:(NSString*)batchUpdateXml handler:(SPSoapRequestCompletedBlock)handler;
+
+
+#pragma mark Extended Methods
+
+- (void) deleteListItemId:(NSString*)listItemId inList:(NSString*)listName handler:(SPSoapRequestCompletedBlock)handler;
 
 @end
