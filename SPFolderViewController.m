@@ -55,7 +55,7 @@
         if (0 == itemCount) {
             itemCount += 1.0;
         }
-        float height = fminf(44*itemCount, 440);
+        float height = fminf(self.tableView.rowHeight*itemCount, 440);
         self.contentSizeForViewInPopover = CGSizeMake(320.0, height);
     }
     
