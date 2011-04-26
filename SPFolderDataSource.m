@@ -103,7 +103,10 @@
 {
     switch (self.dataSourceState) {
         case SPDataSourceStateSucceeded:
-            return [self.directoryContents count];
+        {
+            int c = [self.directoryContents count];
+            return (0 == c) ? 1 : c;
+        }
         default:
             return 1;
     }
@@ -119,29 +122,39 @@
     }
     
     //[cell.accessoryView.subviews performSelector:@selector(removeFromSuperview)];
-    
+
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    cell.textLabel.textAlignment = UITextAlignmentCenter;
+    //cell.textLabel.shadowColor = [UIColor blackColor];
+    cell.textLabel.textColor = [UIColor grayColor];
+
     switch (self.dataSourceState) {
         case SPDataSourceStateUnknown:
         case SPDataSourceStateLoading:
-            cell.accessoryType = UITableViewCellAccessoryNone;
             cell.textLabel.text = NSLocalizedString(@"Loading...", @"Loading...");
             //[cell.accessoryView addSubview:[[[UIActivityIndicatorView alloc] init] autorelease]];
             
             break;
         
         case SPDataSourceStateFailed:
-            cell.accessoryType = UITableViewCellAccessoryNone;
             cell.textLabel.text = NSLocalizedString(@"Error loading contents", @"Error loading contents");
             
             break;
-            
         
         case SPDataSourceStateSucceeded:
         {
-            SPFolderItem* item = [self itemAtPath:indexPath];
-            
-            cell.accessoryType = (item.isFolder) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
-            cell.textLabel.text = item.name;
+            int c = [self.directoryContents count];
+            if (0 == c) {
+                cell.textLabel.text = NSLocalizedString(@"Folder Empty", @"Folder Empty");
+            } else {
+                SPFolderItem* item = [self itemAtPath:indexPath];
+                
+                cell.accessoryType = (item.isFolder) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
+                cell.textLabel.text = item.name;
+                //cell.textLabel.shadowColor = [UIColor clearColor];
+                cell.textLabel.textColor = [UIColor blackColor];
+                cell.textLabel.textAlignment = UITextAlignmentLeft;
+            }
         }
             break;
 
@@ -227,11 +240,13 @@
 - (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath
 {
     if (SPDataSourceStateSucceeded == self.dataSourceState) {
-        SPFolderItem* item = [self.directoryContents objectAtIndex:indexPath.row];
-        return item;
-    } else {
-        return nil;
+        if (0 != self.directoryContents.count) {
+            SPFolderItem* item = [self.directoryContents objectAtIndex:indexPath.row];
+            return item;
+        }
     }
+    
+    return nil;
 }
 
 @end

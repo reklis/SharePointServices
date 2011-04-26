@@ -52,6 +52,9 @@
 {
     if (self.folderDataSource.dataSourceState == SPDataSourceStateSucceeded) {
         float itemCount = self.folderDataSource.directoryContents.count;
+        if (0 == itemCount) {
+            itemCount += 1.0;
+        }
         float height = fminf(44*itemCount, 440);
         self.contentSizeForViewInPopover = CGSizeMake(320.0, height);
     }
@@ -89,6 +92,17 @@
 }
 
 #pragma mark UITableViewDelegate
+
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    SPFolderItem* item = [self.folderDataSource itemAtPath:indexPath];
+    
+    if (item) {
+        return indexPath;
+    } else {
+        return nil;
+    }
+}
 
 - (void)tableView:(UITableView *)aTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
