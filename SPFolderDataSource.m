@@ -41,26 +41,36 @@
 @synthesize filter;
 @synthesize folderUrl;
 
-+ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex
++ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex withRoot:(NSString*)siteDataRoot
 {
-    SPFolderDataSource* ds = [[[SPFolderDataSource alloc] init] autorelease];
+    SPFolderDataSource* ds = [[[SPFolderDataSource alloc] initWithRoot:siteDataRoot] autorelease];
     ds.filter = regex;
     
     [ds loadFolderAtUrl:folderUrl];
+    
+    return ds;
+}
 
++ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex
+{
+    SPFolderDataSource* ds = [SPFolderDataSource folderDataSourceForUrl:folderUrl
+                                                                 filter:regex
+                                                               withRoot:nil];
     return ds;
 }
 
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl
 {
     SPFolderDataSource* ds = [SPFolderDataSource folderDataSourceForUrl:folderUrl
-                                                                 filter:nil];
+                                                                 filter:nil
+                                                               withRoot:nil];
     return ds;
 }
 
 #pragma Initialization
 
-- (id)init {
+- (id)init
+{
     self = [super init];
     if (self) {
         siteData = [[SPSiteData siteData] retain];
@@ -68,7 +78,17 @@
     return self;
 }
 
-- (void)dealloc {
+- (id)initWithRoot:(NSString*)siteRoot
+{
+    self = [super init];
+    if (self) {
+        siteData = [[SPSiteData siteDataWithRoot:siteRoot] retain];
+    }
+    return self;
+}
+
+- (void)dealloc
+{
     [directoryContents release];
     [filter release];
     [siteData release];

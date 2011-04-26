@@ -14,6 +14,7 @@
 {}
 
 + (SPSiteData*) siteData;
++ (SPSiteData*) siteDataWithRoot:(NSString*)siteRoot;
 
 - (void) getListItems:(NSString*)listName
                 query:(NSString*)query 

@@ -20,8 +20,11 @@
     SPSiteData* siteData;
 }
 
++ (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex withRoot:(NSString*)siteDataRoot;
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl;
 + (SPFolderDataSource*) folderDataSourceForUrl:(NSString*)folderUrl filter:(NSString*)regex;
+
+- (id)initWithRoot:(NSString*)siteRoot;
 
 @property (readwrite,nonatomic,retain) NSString* folderUrl;
 @property (readwrite,nonatomic,retain) NSString* filter;

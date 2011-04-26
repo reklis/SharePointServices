@@ -13,7 +13,12 @@
 
 + (SPSiteData*) siteData
 {
-    SPSoapService* svc = [SPServiceFactory makeService:@"/_vti_bin/SiteData.asmx"];
+    return [SPSiteData siteDataWithRoot:nil];
+}
+
++ (SPSiteData*) siteDataWithRoot:(NSString*)siteRoot
+{
+    SPSoapService* svc = [SPServiceFactory makeService:@"/_vti_bin/SiteData.asmx" withRoot:siteRoot];
     SPSiteData* siteDataSvc = [[[SPSiteData alloc] initWithService:svc] autorelease];
     return siteDataSvc;
 }

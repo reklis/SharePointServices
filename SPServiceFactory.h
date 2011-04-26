@@ -20,5 +20,6 @@
 + (void) setServiceSettings:(SPServiceSettings*)s;
 
 + (SPSoapService*) makeService:(NSString*)resourcePath;
++ (SPSoapService*) makeService:(NSString*)resourcePath withRoot:(NSString*)siteRoot;
 
 @end

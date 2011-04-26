@@ -29,15 +29,21 @@ static SPServiceSettings* _serviceSettings;
     }
 }
 
-+ (SPSoapService*) makeService:(NSString*)resourcePath
++ (SPSoapService*) makeService:(NSString*)resourcePath withRoot:(NSString*)siteRoot
 {
     SPSoapService* svc = [[[SPSoapService alloc] init] autorelease];
     
     SPServiceSettings* settings = [SPServiceFactory serviceSettings];
-    svc.resourceUrl = [[settings sharedRootUrl] stringByAppendingString:resourcePath];
+    NSString* r = (nil == siteRoot) ? [settings sharedRootUrl] : siteRoot;
+    svc.resourceUrl = [r stringByAppendingString:resourcePath];
     svc.credentials = [settings sharedCredentials];
     
     return svc;
+}
+
++ (SPSoapService*) makeService:(NSString*)resourcePath
+{
+    return [SPServiceFactory makeService:resourcePath withRoot:nil];
 }
 
 @end

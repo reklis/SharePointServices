@@ -16,6 +16,7 @@
 @synthesize directoryUrl = _directoryUrl;
 @synthesize directoryFilter = _directoryFilter;
 @synthesize folderDataSource = _folderDataSource;
+@synthesize rootUrl = _rootUrl;
 
 #pragma mark Initialization
 
@@ -39,7 +40,9 @@
     self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
     self.clearsSelectionOnViewWillAppear = YES;
     
-    self.folderDataSource = [SPFolderDataSource folderDataSourceForUrl:self.directoryUrl filter:self.directoryFilter];
+    self.folderDataSource = [SPFolderDataSource folderDataSourceForUrl:self.directoryUrl
+                                                                filter:self.directoryFilter
+                                                              withRoot:self.rootUrl];
 
     self.tableView.dataSource = self.folderDataSource;
     self.clearsSelectionOnViewWillAppear = YES;
@@ -120,7 +123,7 @@
 - (void)viewDidUnload {
     [self setDirectoryFilter:nil];
     [self setDirectoryUrl:nil];
-    
+    [self setRootUrl:nil];
     [self setFolderDataSource:nil];
     
     [super viewDidUnload];
@@ -128,6 +131,7 @@
 
 
 - (void)dealloc {
+    [_rootUrl release];
     [_folderDataSource release];
     [_directoryUrl release];
     [_directoryFilter release];
