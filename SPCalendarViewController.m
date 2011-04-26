@@ -51,10 +51,7 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [_calendarDataSource addObserver:self
-                          forKeyPath:@"dataSourceState"
-                             options:NSKeyValueObservingOptionNew
-                             context:NULL];
+    [_calendarDataSource addDataSourceObserver:self];
     [self.tableView reloadData];
 }
 
@@ -68,13 +65,7 @@
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    @try {
-        [_calendarDataSource removeObserver:self
-                                 forKeyPath:@"dataSourceState"];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
+    [_calendarDataSource removeDataSourceObserver:self];
 }
 
 - (void)viewDidUnload

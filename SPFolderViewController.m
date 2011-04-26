@@ -65,54 +65,24 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.folderDataSource addObserver:self
-                            forKeyPath:@"dataSourceState"
-                               options:NSKeyValueObservingOptionNew
-                               context:NULL];
+    [self.folderDataSource addDataSourceObserver:self];
     [self.folderDataSource refresh];
 }
 
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    @try {
-        [self.folderDataSource removeObserver:self
-                                   forKeyPath:@"dataSourceState"];
-
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
+    [self.folderDataSource removeDataSourceObserver:self];
 }
 
 #pragma mark UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)aTableView {
-    // Return the number of sections.
-    return 1;
-}
-
-
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
-    return 1;
+    return [self.folderDataSource tableView:aTableView numberOfRowsInSection:section];
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    static NSString *CellIdentifier = @"CellIdentifier";
-    
-    // Dequeue or create a cell of the appropriate type.
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    
-    cell.textLabel.text = NSLocalizedString(@"Loading...",@"Loading...");
-    
-    return cell;
+    return [self.folderDataSource tableView:tableView cellForRowAtIndexPath:indexPath];
 }
 
 #pragma mark UITableViewDelegate

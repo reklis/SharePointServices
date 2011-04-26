@@ -23,4 +23,29 @@
     return nil;
 }
 
+- (void) refresh
+{
+    // default does nothing
+}
+
+- (void) addDataSourceObserver:(NSObject*)o
+{
+    [self addObserver:o
+           forKeyPath:@"dataSourceState"
+              options:NSKeyValueObservingOptionNew
+    context:NULL];
+}
+
+- (void) removeDataSourceObserver:(NSObject*)o
+{
+    @try {
+        [self removeObserver:o
+                  forKeyPath:@"dataSourceState"];
+        
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+}
+
 @end

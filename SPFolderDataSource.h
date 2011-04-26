@@ -31,7 +31,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void) loadFolderAtUrl:(NSString*)url;
-- (void) refresh;
 
 - (SPFolderItem*) itemAtPath:(NSIndexPath*)indexPath;
 

@@ -265,6 +265,15 @@
     [siteData getWeb:^(SPSoapRequest *getWebReq)
     {
         STAssertHTTPOK(getWebReq);
+        
+        __block int urlCount = 0;
+        [getWebReq responseNodesForXPath:@"//sp:Url"
+                              usingBlock:^(XPathResult *r) {
+                                  STAssertNotNil(r.content, @"content should not be nil");
+                                  ++urlCount;
+                              }];
+        
+        STAssertTrue(urlCount != 0, @"url count should not be zero");
     }];
 }
 

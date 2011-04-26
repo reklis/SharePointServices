@@ -24,4 +24,9 @@ typedef enum SPDataSourceStateEnum
 
 @property (readwrite,assign) SPDataSourceState dataSourceState;
 
+- (void) refresh;
+
+- (void) addDataSourceObserver:(NSObject*)o;
+- (void) removeDataSourceObserver:(NSObject*)o;
+
 @end

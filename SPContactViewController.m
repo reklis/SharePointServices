@@ -58,10 +58,7 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.contactDataSource addObserver:self
-                             forKeyPath:@"dataSourceState"
-                                options:NSKeyValueObservingOptionNew
-                                context:NULL];
+    [self.contactDataSource addDataSourceObserver:self];
     
 }
 
@@ -75,14 +72,7 @@
 - (void) viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    @try {
-        [self.contactDataSource removeObserver:self
-                                    forKeyPath:@"dataSourceState"];
-
-    }
-    @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
+    [self.contactDataSource removeDataSourceObserver:self];
 }
 
 - (void)viewDidUnload
