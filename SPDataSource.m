@@ -33,7 +33,7 @@
     [self addObserver:o
            forKeyPath:@"dataSourceState"
               options:NSKeyValueObservingOptionNew
-    context:NULL];
+              context:NULL];
 }
 
 - (void) removeDataSourceObserver:(NSObject*)o
