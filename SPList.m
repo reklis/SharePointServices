@@ -14,7 +14,12 @@
 
 + (SPList*) list
 {
-    SPSoapService* svc = [SPServiceFactory makeService:@"/_vti_bin/Lists.asmx"];
+    return [SPList listWithRoot:nil];
+}
+
++ (SPList*) listWithRoot:(NSString*)siteRoot
+{
+    SPSoapService* svc = [SPServiceFactory makeService:@"/_vti_bin/Lists.asmx" withRoot:siteRoot];
     SPList* listSvc = [[[SPList alloc] initWithService:svc] autorelease];
     return listSvc;
 }

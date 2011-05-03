@@ -14,6 +14,7 @@
 }
 
 + (SPList*) list;
++ (SPList*) listWithRoot:(NSString*)siteRoot;
 
 - (void) getListCollection:(SPSoapRequestCompletedBlock)handler;
 - (void) getList:(NSString*)listName handler:(SPSoapRequestCompletedBlock)handler;
