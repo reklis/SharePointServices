@@ -17,6 +17,7 @@
 @optional
 
 - (void) folderViewController:(SPFolderViewController*)folderViewController didSelectItem:(SPFolderItem*)item;
+- (void) folderViewController:(SPFolderViewController *)folderViewController didEnumerateRemoteFolderWithContents:(NSArray*)remoteFolderContents;
 
 @end
 

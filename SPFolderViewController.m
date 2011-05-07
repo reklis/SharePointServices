@@ -57,6 +57,10 @@
         }
         float height = fminf(self.tableView.rowHeight*itemCount, 440);
         self.contentSizeForViewInPopover = CGSizeMake(320.0, height);
+        
+        if ([delegate respondsToSelector:@selector(folderViewController:didEnumerateRemoteFolderWithContents:)]) {
+            [delegate folderViewController:self didEnumerateRemoteFolderWithContents:self.folderDataSource.directoryContents];
+        }
     }
     
     if ([keyPath isEqualToString:@"dataSourceState"]) {
