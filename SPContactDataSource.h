@@ -28,15 +28,9 @@
 @end
 
 
-@interface SPContact : NSObject
+@interface SPContact : NSObject <NSCoding>
 {
 }
-
-+ (SPContact*) contactWithLastName:(NSString*)last
-                         firstName:(NSString*)first
-                             email:(NSString*)em
-                          jobTitle:(NSString*)jt
-                         workPhone:(NSString*)wp;
 
 @property (readwrite,nonatomic,retain) NSString* lastName;
 @property (readwrite,nonatomic,retain) NSString* firstName;

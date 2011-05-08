@@ -11,6 +11,8 @@
 
 @implementation SPDataSource
 
+#pragma mark Data
+
 @synthesize dataSourceState;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -36,6 +38,10 @@
               context:NULL];
 }
 
+#pragma mark Cache
+
+@synthesize cacheRootObject, cacheFileName;
+
 - (void) removeDataSourceObserver:(NSObject*)o
 {
     @try {
@@ -46,6 +52,38 @@
     @catch (NSException *exception) {
         NSLog(@"%@", exception);
     }
+}
+
+- (void) saveCachedResults
+{
+    id<NSCoding> rootObj = [self cacheRootObject];
+    NSString* archivePath = self.cacheFileName;
+    if ((!rootObj) || (!archivePath)) return;
+    
+    @try {
+        BOOL OK = [NSKeyedArchiver archiveRootObject:rootObj
+                                              toFile:archivePath];
+        if (!OK) {
+            NSLog(@"%@ archiving to: %@ Failed", [self class], archivePath);
+        }
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@ error caching subsites: %@", [self class], exception);
+    }
+}
+
+- (void) loadCachedResults
+{
+    NSString* archivePath = self.cacheFileName;
+    if (!archivePath) return;
+    
+    self.cacheRootObject = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
+}
+
+- (void)dealloc {
+    [cacheRootObject release];
+    [cacheFileName release];
+    [super dealloc];
 }
 
 @end

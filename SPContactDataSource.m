@@ -10,23 +10,6 @@
 
 @implementation SPContact
 
-+ (SPContact*) contactWithLastName:(NSString*)last
-                         firstName:(NSString*)first
-                             email:(NSString*)em
-                          jobTitle:(NSString*)jt
-                         workPhone:(NSString*)wp
-{
-    SPContact* c = [[[SPContact alloc] init] autorelease];
-    
-    c.lastName = last;
-    c.firstName = first;
-    c.email = em;
-    c.jobTitle = jt;
-    c.workPhone = wp;
-    
-    return c;
-}
-
 @synthesize lastName;
 @synthesize firstName;
 @synthesize email;
@@ -62,6 +45,30 @@
             return @"";
         }
     }
+}
+
+- (id)initWithCoder:(NSCoder *)decoder
+{
+    SPContact* c = [[SPContact alloc] init];
+    
+    c.lastName = [decoder decodeObjectForKey:@"lastName"];
+    c.firstName = [decoder decodeObjectForKey:@"firstName"];
+    c.email = [decoder decodeObjectForKey:@"email"];
+    c.jobTitle = [decoder decodeObjectForKey:@"jobTitle"];
+    c.workPhone = [decoder decodeObjectForKey:@"workPhone"];
+    c.mobilePhone = [decoder decodeObjectForKey:@"mobilePhone"];
+    
+    return c;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeObject:self.lastName forKey:@"lastName"];
+    [encoder encodeObject:self.firstName forKey:@"firstName"];
+    [encoder encodeObject:self.email forKey:@"email"];
+    [encoder encodeObject:self.jobTitle forKey:@"jobTitle"];
+    [encoder encodeObject:self.workPhone forKey:@"workPhone"];
+    [encoder encodeObject:self.mobilePhone forKey:@"mobilePhone"];
 }
 
 @end

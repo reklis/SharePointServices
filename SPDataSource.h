@@ -29,4 +29,10 @@ typedef enum SPDataSourceStateEnum
 - (void) addDataSourceObserver:(NSObject*)o;
 - (void) removeDataSourceObserver:(NSObject*)o;
 
+@property (readwrite,nonatomic,retain) id<NSObject,NSCoding> cacheRootObject;
+@property (readwrite,nonatomic,retain) NSString* cacheFileName;
+
+- (void) saveCachedResults;
+- (void) loadCachedResults;
+
 @end
