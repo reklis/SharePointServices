@@ -59,9 +59,14 @@
 
 @end
 
+
+@interface SPCalendarDataSource(Private)
+- (void) indexEvents;
+- (void) handleHttpError:(NSError *)httpError;
+@end
+
 @implementation SPCalendarDataSource
 
-@synthesize events;
 @synthesize eventDays;
 
 - (id)init {
@@ -75,9 +80,18 @@
 - (void)dealloc {
     [list release];
     [eventDays release];
-    [events release];
     
     [super dealloc];
+}
+
+- (NSMutableDictionary*) events
+{
+    return self.cacheRootObject;
+}
+
+- (void)setEvents:(NSMutableDictionary *)events
+{
+    self.cacheRootObject = events;
 }
 
 - (void) loadCalendarNamed:(NSString*)listName
@@ -91,7 +105,7 @@
     [list getList:listName handler:^(SPSoapRequest* req)
     {
         if (req.error) {
-            self.dataSourceState = SPDataSourceStateFailed;
+            [self handleHttpError:req.error];
             return;
         }
 
@@ -112,7 +126,7 @@
                    handler:^(SPSoapRequest* getListItemReq)
         {
             if (getListItemReq.error) {
-                self.dataSourceState = SPDataSourceStateFailed;
+                [self handleHttpError:getListItemReq.error];
                 return;
             }
 
@@ -151,28 +165,33 @@
             [gregorian release];
 
             self.events = myEvents;
+            [self indexEvents];
+            [self saveCachedResults];
             
-            self.eventDays = [[self.events allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-            {
-                NSDate* d1 = (NSDate*)obj1;
-                NSDate* d2 = (NSDate*)obj2;
-
-                return [d1 compare:d2];
-            }];
-
-            for (NSMutableArray* a in [self.events allValues]) {
-                [a sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
-                {
-                    SPCalendarItem* i1 = (SPCalendarItem*) obj1;
-                    SPCalendarItem* i2 = (SPCalendarItem*) obj2;
-                    
-                    return [i1.startDate compare:i2.startDate];
-                }];
-            }
-
             self.dataSourceState = SPDataSourceStateSucceeded;
         }];
     }];
+}
+
+- (void) indexEvents
+{
+    self.eventDays = [[self.events allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+                      {
+                          NSDate* d1 = (NSDate*)obj1;
+                          NSDate* d2 = (NSDate*)obj2;
+                          
+                          return [d1 compare:d2];
+                      }];
+    
+    for (NSMutableArray* a in [self.events allValues]) {
+        [a sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
+         {
+             SPCalendarItem* i1 = (SPCalendarItem*) obj1;
+             SPCalendarItem* i2 = (SPCalendarItem*) obj2;
+             
+             return [i1.startDate compare:i2.startDate];
+         }];
+    }
 }
 
 - (SPCalendarItem*) itemAtPath:(NSIndexPath*)indexPath
@@ -181,6 +200,22 @@
     NSArray* items = [self.events objectForKey:k];
     SPCalendarItem* i = [items objectAtIndex:indexPath.row];
     return i;
+}
+
+- (void) handleHttpError:(NSError *)httpError
+{
+    NSLog(@"error retrieving calendar: %@", httpError);
+    
+    if (!self.cacheRootObject) {
+        [self loadCachedResults];
+    }
+    
+    if (self.events) {
+        [self indexEvents];
+        self.dataSourceState = SPDataSourceStateSucceeded;
+    } else {
+        self.dataSourceState = SPDataSourceStateFailed;
+    }
 }
 
 #pragma UITableViewDataSource

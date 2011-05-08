@@ -19,7 +19,7 @@
     SPList* list;
 }
 
-@property (readwrite,retain) NSDictionary* events;
+@property (readwrite,retain) NSMutableDictionary* events;
 @property (readwrite,retain) NSArray* eventDays;
 
 - (SPCalendarItem*) itemAtPath:(NSIndexPath*)indexPath;
