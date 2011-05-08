@@ -24,6 +24,8 @@
 
 @property (readwrite,nonatomic,assign) id<SPContactViewControllerDelegate> delegate;
 
+- (void) createDataSource;
+
 @end
 
 

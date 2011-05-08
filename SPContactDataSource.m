@@ -73,9 +73,15 @@
 
 @end
 
+
+@interface SPContactDataSource(Private)
+- (void) indexContacts;
+- (void) handleHttpError:(NSError*)httpError;
+@end
+
+
 @implementation SPContactDataSource
 
-@synthesize contacts;
 @synthesize contactIndexes;
 
 - (id)init {
@@ -87,10 +93,18 @@
 }
 
 - (void)dealloc {
-    [contacts release];
     [contactIndexes release];
     [list release];
     [super dealloc];
+}
+
+- (NSDictionary*) contacts {
+    return self.cacheRootObject;
+}
+
+- (void) setContacts:(NSDictionary *)contacts
+{
+    self.cacheRootObject = contacts;
 }
 
 - (void) loadContactsListNamed:(NSString*)listName
@@ -103,7 +117,7 @@
     [list getList:listName handler:^(SPSoapRequest* req)
      {
          if (req.error) {
-             self.dataSourceState = SPDataSourceStateFailed;
+             [self handleHttpError:req.error];
              return;
          }
          
@@ -119,7 +133,7 @@
                     handler:^(SPSoapRequest* getListItemReq)
           {
               if (getListItemReq.error) {
-                  self.dataSourceState = SPDataSourceStateFailed;
+                  [self handleHttpError:getListItemReq.error];
                   return;
               }
               
@@ -149,29 +163,50 @@
                }];
               
               self.contacts = myContacts;
-              
-              self.contactIndexes = [[self.contacts allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
-                                     {
-                                         NSString* s1 = (NSString*)obj1;
-                                         NSString* s2 = (NSString*)obj2;
-                                         
-                                         return [s1 compare:s2];
-                                     }];
-              
-              for (NSMutableArray* a in [self.contacts allValues]) {
-                  [a sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
-                   {
-                       SPContact* i1 = (SPContact*) obj1;
-                       SPContact* i2 = (SPContact*) obj2;
-                       
-                       return [i1.lastName compare:i2.lastName];
-                   }];
-              }
+              [self indexContacts];
+              [self saveCachedResults];
               
               self.dataSourceState = SPDataSourceStateSucceeded;
           }];
      }];
     
+}
+
+- (void) indexContacts
+{
+    self.contactIndexes = [[self.contacts allKeys] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2)
+                           {
+                               NSString* s1 = (NSString*)obj1;
+                               NSString* s2 = (NSString*)obj2;
+                               
+                               return [s1 compare:s2];
+                           }];
+    
+    for (NSMutableArray* a in [self.contacts allValues]) {
+        [a sortUsingComparator:^NSComparisonResult(id obj1, id obj2)
+         {
+             SPContact* i1 = (SPContact*) obj1;
+             SPContact* i2 = (SPContact*) obj2;
+             
+             return [i1.lastName compare:i2.lastName];
+         }];
+    }
+}
+
+- (void) handleHttpError:(NSError *)httpError
+{
+    NSLog(@"error retrieving contacts: %@", httpError);
+    
+    if (!self.cacheRootObject) {
+        [self loadCachedResults];
+    }
+    
+    if (self.contacts) {
+        [self indexContacts];
+        self.dataSourceState = SPDataSourceStateSucceeded;
+    } else {
+        self.dataSourceState = SPDataSourceStateFailed;
+    }
 }
 
 - (SPContact*) itemAtPath:(NSIndexPath*)indexPath

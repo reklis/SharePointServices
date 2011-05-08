@@ -40,6 +40,14 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+- (void) createDataSource
+{
+    if (!self.contactDataSource) {
+        self.contactDataSource = [[[SPContactDataSource alloc] init] autorelease];
+        self.tableView.dataSource = self.contactDataSource;
+    }
+}
+
 #pragma mark UITableViewController
 
 - (void)viewDidLoad
@@ -49,9 +57,7 @@
     self.clearsSelectionOnViewWillAppear = YES;
     self.tableView.sectionIndexMinimumDisplayRowCount = 25;
     
-    self.contactDataSource = [[[SPContactDataSource alloc] init] autorelease];
-    self.tableView.dataSource = self.contactDataSource;
-    
+    [self createDataSource];
     [self.contactDataSource loadContactsListNamed:self.contactListName];
 }
 
@@ -59,7 +65,6 @@
 {
     [super viewWillAppear:animated];
     [self.contactDataSource addDataSourceObserver:self];
-    
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
