@@ -47,18 +47,17 @@
     }
 }
 
-- (id)initWithCoder:(NSCoder *)decoder
-{
-    SPContact* c = [[SPContact alloc] init];
-    
-    c.lastName = [decoder decodeObjectForKey:@"lastName"];
-    c.firstName = [decoder decodeObjectForKey:@"firstName"];
-    c.email = [decoder decodeObjectForKey:@"email"];
-    c.jobTitle = [decoder decodeObjectForKey:@"jobTitle"];
-    c.workPhone = [decoder decodeObjectForKey:@"workPhone"];
-    c.mobilePhone = [decoder decodeObjectForKey:@"mobilePhone"];
-    
-    return c;
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (self) {
+        self.lastName = [decoder decodeObjectForKey:@"lastName"];
+        self.firstName = [decoder decodeObjectForKey:@"firstName"];
+        self.email = [decoder decodeObjectForKey:@"email"];
+        self.jobTitle = [decoder decodeObjectForKey:@"jobTitle"];
+        self.workPhone = [decoder decodeObjectForKey:@"workPhone"];
+        self.mobilePhone = [decoder decodeObjectForKey:@"mobilePhone"];
+    }
+    return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder

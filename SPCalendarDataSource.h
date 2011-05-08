@@ -27,7 +27,7 @@
 
 @end
 
-@interface SPCalendarItem : NSObject
+@interface SPCalendarItem : NSObject <NSCoding>
 {
 }
 

@@ -57,6 +57,27 @@
     [super dealloc];
 }
 
+- (id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (self) {
+        self.title = [decoder decodeObjectForKey:@"title"];
+        self.startDate = [decoder decodeObjectForKey:@"startDate"];
+        self.endDate = [decoder decodeObjectForKey:@"endDate"];
+        self.location = [decoder decodeObjectForKey:@"location"];
+        self.isAllDay = [decoder decodeBoolForKey:@"isAllDay"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder
+{
+    [encoder encodeObject:self.title forKey:@"title"];
+    [encoder encodeObject:self.startDate forKey:@"startDate"];
+    [encoder encodeObject:self.endDate forKey:@"endDate"];
+    [encoder encodeObject:self.location forKey:@"location"];
+    [encoder encodeBool:self.isAllDay forKey:@"isAllDay"];
+}
+
 @end
 
 
@@ -286,7 +307,6 @@
         case SPDataSourceStateFailed:
             cell.textLabel.text = NSLocalizedString(@"Error loading contents", @"Error loading contents");
             break;
-            
             
         case SPDataSourceStateSucceeded:
         {
