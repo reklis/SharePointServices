@@ -20,4 +20,10 @@
     return [[[SPServiceSettings alloc] init] autorelease];
 }
 
+- (void)dealloc {
+    [sharedRootUrl release];
+    [sharedCredentials release];
+    [super dealloc];
+}
+
 @end

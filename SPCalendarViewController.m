@@ -15,8 +15,7 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        _calendarName = calendarName;
-        
+        _calendarName = [calendarName retain];
         _calendarDataSource = [[SPCalendarDataSource alloc] init];
     }
     return self;

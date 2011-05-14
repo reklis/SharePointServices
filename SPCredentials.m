@@ -15,4 +15,11 @@
 @synthesize password;
 @synthesize domain;
 
+- (void)dealloc {
+    [username release];
+    [password release];
+    [domain release];
+    [super dealloc];
+}
+
 @end
