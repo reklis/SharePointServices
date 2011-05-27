@@ -77,7 +77,15 @@
     NSString* archivePath = self.cacheFileName;
     if (!archivePath) return;
     
-    self.cacheRootObject = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
+    @try {
+        self.cacheRootObject = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
+        //self.dataSourceState = SPDataSourceStateSucceeded;
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Error loading from cache: %@", exception);
+        self.cacheRootObject = nil;
+        //self.dataSourceState = SPDataSourceStateFailed;
+    }
 }
 
 - (void)dealloc {
