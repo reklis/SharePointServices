@@ -174,7 +174,10 @@
 
 - (void) loadFolderAtUrl:(NSString*)url
 {
-    NSAssert(nil != url, @"url should not be nil");
+    //NSAssert(nil != url, @"url should not be nil");
+    if (nil == url) {
+        return;
+    }
     
     if (self.dataSourceState == SPDataSourceStateLoading) {
         return;
