@@ -18,3 +18,7 @@ REFERENCES
 
 http://allseeing-i.com/ASIHTTPRequest/How-to-use
 http://github.com/reklis/NSDataXPath
+
+---
+
+[![gittip](http://img.shields.io/gittip/reklis.svg)](https://www.gittip.com/reklis/)
